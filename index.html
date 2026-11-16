@@ -1,55 +1,95 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
- <meta charset="UTF-8">
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>TODO список</title>
- <script>
- // Зберегти дані в localStorage
- function saveData() {
- let name = document.getElementById("name").value;
- // якщо name не пустий
- if (name) {
- // запис в змінну taskName
- localStorage.setItem("taskName", name);
- // alert - оця форма, що появляється зверху сторінки
- alert("Ім'я збережено в localStorage!");
- } else {
- alert("Будь ласка, введіть ім'я!");
- }
- }
- // Отримати дані з localStorage
- function getData() {
- let name = localStorage.getItem("taskName");
- if (name) {
- document.getElementById("taskList").innerHTML = name;
- alert("Збережене ім'я: " + name);
- } else {
- alert("Ім'я не знайдено у localStorage!");
- }
- }
- // Видалити дані з localStorage
- function removeData() {
- localStorage.removeItem("taskName");
- alert("Ім'я видалено з localStorage!");
- }
- // Очистити всі дані в localStorage
- function clearData() {
- localStorage.clear();
- alert("Всі дані з localStorage видалено!");
- }
- </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Простий інтернет-магазин</title>
+    <script>
+        // Зберегти товар у localStorage
+        function saveData() {
+            let name = document.getElementById("name").value;
+            let price = document.getElementById("price").value;
+            let inStock = document.getElementById("inStock").checked;
+            let delivery = document.getElementById("delivery").checked;
+
+            // якщо назву товару введено
+            if (name) {
+                localStorage.setItem("productName", name);
+                localStorage.setItem("productPrice", price);
+                localStorage.setItem("productInStock", inStock);
+                localStorage.setItem("productDelivery", delivery);
+                alert("Товар додано до кошика!");
+            } else {
+                alert("Будь ласка, введіть назву товару!");
+            }
+        }
+
+        // Отримати товар з localStorage
+        function getData() {
+            let name = localStorage.getItem("productName");
+            if (name) {
+                let price = localStorage.getItem("productPrice");
+                let inStock = localStorage.getItem("productInStock") === "true";
+                let delivery = localStorage.getItem("productDelivery") === "true";
+
+                // виводимо дані в елемент cart
+                document.getElementById("cart").innerHTML =
+                    "Товар: " + name + "<br>" +
+                    "Ціна: " + price + " грн<br>" +
+                    "У наявності: " + (inStock ? "так" : "ні") + "<br>" +
+                    "Доставка: " + (delivery ? "так" : "ні");
+
+                // відновлюємо стан checkbox
+                document.getElementById("inStock").checked = inStock;
+                document.getElementById("delivery").checked = delivery;
+
+                alert("Товар у кошику: " + name);
+            } else {
+                alert("Кошик порожній!");
+            }
+        }
+
+        // Видалити товар з localStorage
+        function removeData() {
+            localStorage.removeItem("productName");
+            localStorage.removeItem("productPrice");
+            localStorage.removeItem("productInStock");
+            localStorage.removeItem("productDelivery");
+            document.getElementById("cart").innerHTML = "Кошик порожній";
+            alert("Товар видалено з кошика!");
+        }
+
+        // Очистити всі дані в localStorage
+        function clearData() {
+            localStorage.clear();
+            document.getElementById("cart").innerHTML = "Кошик порожній";
+            alert("Всі дані з localStorage видалено!");
+        }
+    </script>
 </head>
 <body>
- <h1>TODO список</h1>
- <label for="name">Завдання:</label>
- <input type="text" id="name" name="name">
- <br><br>
- <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
- <label id="taskList"> Завдання</label><br>
- <button onclick="saveData()">Зберегти завдання</button>
- <button onclick="getData()">Отримати завдання</button>
- <button onclick="removeData()">Видалити завдання</button>
- <button onclick="clearData()">Очистити базу даних</button>
+    <h1>Простий інтернет-магазин</h1>
+
+    <label for="name">Назва товару:</label>
+    <input type="text" id="name" name="name" placeholder="Наприклад: Ноутбук">
+    <br><br>
+
+    <label for="price">Ціна (грн):</label>
+    <input type="number" id="price" name="price" min="0" value="0">
+    <br><br>
+
+    <input type="checkbox" id="inStock" name="inStock" value="inStock">
+    <label for="inStock">Товар у наявності</label><br>
+
+    <input type="checkbox" id="delivery" name="delivery" value="delivery">
+    <label for="delivery">Потрібна доставка</label><br><br>
+
+    <h3>Кошик:</h3>
+    <p id="cart">Кошик порожній</p>
+
+    <button onclick="saveData()">Додати в кошик</button>
+    <button onclick="getData()">Показати кошик</button>
+    <button onclick="removeData()">Видалити товар</button>
+    <button onclick="clearData()">Очистити кошик</button>
 </body>
 </html>
