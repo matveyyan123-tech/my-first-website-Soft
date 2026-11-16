@@ -3,10 +3,53 @@
 <head>
  <meta charset="UTF-8">
  <meta name="viewport" content="width=device-width, initial-scale=1.0">
- <title>Моя перша HTML сторінка</title>
+ <title>TODO список</title>
+ <script>
+ // Зберегти дані в localStorage
+ function saveData() {
+ let name = document.getElementById("name").value;
+ // якщо name не пустий
+ if (name) {
+ // запис в змінну taskName
+ localStorage.setItem("taskName", name);
+ // alert - оця форма, що появляється зверху сторінки
+ alert("Ім'я збережено в localStorage!");
+ } else {
+ alert("Будь ласка, введіть ім'я!");
+ }
+ }
+ // Отримати дані з localStorage
+ function getData() {
+ let name = localStorage.getItem("taskName");
+ if (name) {
+ document.getElementById("taskList").innerHTML = name;
+ alert("Збережене ім'я: " + name);
+ } else {
+ alert("Ім'я не знайдено у localStorage!");
+ }
+ }
+ // Видалити дані з localStorage
+ function removeData() {
+ localStorage.removeItem("taskName");
+ alert("Ім'я видалено з localStorage!");
+ }
+ // Очистити всі дані в localStorage
+ function clearData() {
+ localStorage.clear();
+ alert("Всі дані з localStorage видалено!");
+ }
+ </script>
 </head>
 <body>
- <h1>Привіт, світ!</h1>
- <p>Це моя перша HTML сторінка з доданим текстом.</p>
+ <h1>TODO список</h1>
+ <label for="name">Завдання:</label>
+ <input type="text" id="name" name="name">
+ <br><br>
+ <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+ <label id="taskList"> Завдання</label><br>
+ <button onclick="saveData()">Зберегти завдання</button>
+ <button onclick="getData()">Отримати завдання</button>
+ <button onclick="removeData()">Видалити завдання</button>
+ <button onclick="clearData()">Очистити базу даних</button>
 </body>
 </html>
