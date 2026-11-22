@@ -3,93 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Простий інтернет-магазин</title>
-    <script>
-        // Зберегти товар у localStorage
-        function saveData() {
-            let name = document.getElementById("name").value;
-            let price = document.getElementById("price").value;
-            let inStock = document.getElementById("inStock").checked;
-            let delivery = document.getElementById("delivery").checked;
-
-            // якщо назву товару введено
-            if (name) {
-                localStorage.setItem("productName", name);
-                localStorage.setItem("productPrice", price);
-                localStorage.setItem("productInStock", inStock);
-                localStorage.setItem("productDelivery", delivery);
-                alert("Товар додано до кошика!");
-            } else {
-                alert("Будь ласка, введіть назву товару!");
+    <title>Простий інтернет-магазин — Лабораторна робота №10</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f4f6f8;
+            color: #222;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 960px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 24px;
+        }
+        .card {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        h1, h2 {
+            margin-top: 0;
+            color: #1a202c;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #2b6cb0;
+        }
+        .error {
+            color: #e53e3e;
+            font-size: 13px;
+            margin-top: 4px;
+            display: block;
+            min-height: 18px;
+        }
+        button {
+            background-color: #2b6cb0;
+            color: #fff;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #2c5282;
+        }
+        .btn-buy {
+            background-color: #38a169;
+            padding: 6px 12px;
+        }
+        .btn-buy:hover {
+            background-color: #2f855a;
+        }
+        .btn-clear {
+            background-color: #e53e3e;
+            margin-top: 10px;
+        }
+        .btn-clear:hover {
+            background-color: #c53030;
+        }
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .product-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: #fafafa;
+        }
+        .product-title {
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 8px;
+            word-break: break-word;
+        }
+        .product-price {
+            color: #2b6cb0;
+            font-weight: 700;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+        .cart-section {
+            margin-top: 24px;
+            border-top: 2px solid #edf2f7;
+            padding-top: 16px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #edf2f7;
+            font-size: 14px;
+        }
+        .success-msg {
+            color: #2f855a;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
             }
         }
-
-        // Отримати товар з localStorage
-        function getData() {
-            let name = localStorage.getItem("productName");
-            if (name) {
-                let price = localStorage.getItem("productPrice");
-                let inStock = localStorage.getItem("productInStock") === "true";
-                let delivery = localStorage.getItem("productDelivery") === "true";
-
-                // виводимо дані в елемент cart
-                document.getElementById("cart").innerHTML =
-                    "Товар: " + name + "<br>" +
-                    "Ціна: " + price + " грн<br>" +
-                    "У наявності: " + (inStock ? "так" : "ні") + "<br>" +
-                    "Доставка: " + (delivery ? "так" : "ні");
-
-                // відновлюємо стан checkbox
-                document.getElementById("inStock").checked = inStock;
-                document.getElementById("delivery").checked = delivery;
-
-                alert("Товар у кошику: " + name);
-            } else {
-                alert("Кошик порожній!");
-            }
-        }
-
-        // Видалити товар з localStorage
-        function removeData() {
-            localStorage.removeItem("productName");
-            localStorage.removeItem("productPrice");
-            localStorage.removeItem("productInStock");
-            localStorage.removeItem("productDelivery");
-            document.getElementById("cart").innerHTML = "Кошик порожній";
-            alert("Товар видалено з кошика!");
-        }
-
-        // Очистити всі дані в localStorage
-        function clearData() {
-            localStorage.clear();
-            document.getElementById("cart").innerHTML = "Кошик порожній";
-            alert("Всі дані з localStorage видалено!");
-        }
-    </script>
+    </style>
 </head>
 <body>
-    <h1>Простий інтернет-магазин</h1>
 
-    <label for="name">Назва товару:</label>
-    <input type="text" id="name" name="name" placeholder="Наприклад: Ноутбук">
-    <br><br>
+    <div class="container">
+        <!-- Блок додавання товару з валідацією -->
+        <div class="card">
+            <h2>Додати товар</h2>
+            <form id="productForm" novalidate>
+                <div class="form-group">
+                    <label for="productName">Назва товару:</label>
+                    <input type="text" id="productName" placeholder="Наприклад: Gaming_Mouse-01">
+                    <span id="nameError" class="error"></span>
+                </div>
 
-    <label for="price">Ціна (грн):</label>
-    <input type="number" id="price" name="price" min="0" value="0">
-    <br><br>
+                <div class="form-group">
+                    <label for="productPrice">Ціна товару ($):</label>
+                    <input type="text" id="productPrice" placeholder="Наприклад: 49.99 або 100">
+                    <span id="priceError" class="error"></span>
+                </div>
 
-    <input type="checkbox" id="inStock" name="inStock" value="inStock">
-    <label for="inStock">Товар у наявності</label><br>
+                <button type="submit">Додати до каталогу</button>
+                <div id="successMessage" class="success-msg"></div>
+            </form>
+        </div>
 
-    <input type="checkbox" id="delivery" name="delivery" value="delivery">
-    <label for="delivery">Потрібна доставка</label><br><br>
+        <!-- Блок каталогу та кошика -->
+        <div class="card">
+            <h2>Каталог товарів</h2>
+            <div id="productList" class="product-list"></div>
 
-    <h3>Кошик:</h3>
-    <p id="cart">Кошик порожній</p>
+            <div class="cart-section">
+                <h2>Кошик (<span id="cartCount">0</span>)</h2>
+                <div id="cartItems">Кошик порожній</div>
+                <p><strong>Загальна сума: $<span id="totalPrice">0.00</span></strong></p>
+                <button id="clearCartBtn" class="btn-clear" style="display: none;">Очистити кошик</button>
+            </div>
+        </div>
+    </div>
 
-    <button onclick="saveData()">Додати в кошик</button>
-    <button onclick="getData()">Показати кошик</button>
-    <button onclick="removeData()">Видалити товар</button>
-    <button onclick="clearData()">Очистити кошик</button>
+    <script>
+        // Початковий список товарів
+        const products = [
+            { name: 'Mechanical_Keyboard-Pro', price: 120.00 },
+            { name: 'USB-C Hub 4-in-1', price: 25.50 },
+            { name: 'Mousepad_XL', price: 15 }
+        ];
+
+        let cart = [];
+
+        // Елементи DOM
+        const productForm = document.getElementById('productForm');
+        const productNameInput = document.getElementById('productName');
+        const productPriceInput = document.getElementById('productPrice');
+        const nameError = document.getElementById('nameError');
+        const priceError = document.getElementById('priceError');
+        const successMessage = document.getElementById('successMessage');
+        const productList = document.getElementById('productList');
+        const cartItemsContainer = document.getElementById('cartItems');
+        const cartCount = document.getElementById('cartCount');
+        const totalPriceEl = document.getElementById('totalPrice');
+        const clearCartBtn = document.getElementById('clearCartBtn');
+
+        // Відображення каталогу товарів
+        function renderProducts() {
+            productList.innerHTML = '';
+            products.forEach((product, index) => {
+                const item = document.createElement('div');
+                item.className = 'product-item';
+                item.innerHTML = `
+                    <div>
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-price">$${Number(product.price).toFixed(2)}</div>
+                    </div>
+                    <button class="btn-buy" onclick="addToCart(${index})">Купити</button>
+                `;
+                productList.appendChild(item);
+            });
+        }
+
+        // Додавання товару до кошика
+        window.addToCart = function(index) {
+            cart.push(products[index]);
+            renderCart();
+        };
+
+        // Відображення кошика
+        function renderCart() {
+            cartCount.textContent = cart.length;
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = 'Кошик порожній';
+                totalPriceEl.textContent = '0.00';
+                clearCartBtn.style.display = 'none';
+                return;
+            }
+
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            cart.forEach((item) => {
+                total += Number(item.price);
+                const row = document.createElement('div');
+                row.className = 'cart-item';
+                row.innerHTML = `
+                    <span>${item.name}</span>
+                    <span>$${Number(item.price).toFixed(2)}</span>
+                `;
+                cartItemsContainer.appendChild(row);
+            });
+
+            totalPriceEl.textContent = total.toFixed(2);
+            clearCartBtn.style.display = 'inline-block';
+        }
+
+        // Очищення кошика
+        clearCartBtn.addEventListener('click', () => {
+            cart = [];
+            renderCart();
+        });
+
+        // Валідація форми при відправці
+        productForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Очищення попередніх повідомлень
+            nameError.textContent = '';
+            priceError.textContent = '';
+            successMessage.textContent = '';
+
+            let isValid = true;
+
+            const nameValue = productNameInput.value.trim();
+            const priceValue = productPriceInput.value.trim();
+
+            // Регулярні вирази згідно з умовою завдання №8
+            const nameRegex = /^[a-zA-Z0-9\s\-_]+$/;
+            const priceRegex = /^\d+(\.\d{2})?$/;
+
+            // Перевірка назви товару
+            if (!nameValue) {
+                nameError.textContent = 'Поле "Назва товару" не може бути порожнім.';
+                isValid = false;
+            } else if (!nameRegex.test(nameValue)) {
+                nameError.textContent = 'Дозволені лише латинські літери, цифри, пробіли, "-" та "_".';
+                isValid = false;
+            }
+
+            // Перевірка ціни товару
+            if (!priceValue) {
+                priceError.textContent = 'Поле "Ціна товару" не може бути порожнім.';
+                isValid = false;
+            } else if (!priceRegex.test(priceValue) || parseFloat(priceValue) <= 0) {
+                priceError.textContent = 'Введіть додатне число (наприклад: 100 або 49.99).';
+                isValid = false;
+            }
+
+            // Якщо валідація успішна — додаємо товар
+            if (isValid) {
+                products.push({
+                    name: nameValue,
+                    price: parseFloat(priceValue)
+                });
+                renderProducts();
+                productForm.reset();
+                successMessage.textContent = 'Товар успішно додано до каталогу!';
+            }
+        });
+
+        // Ініціалізація при завантаженні сторінки
+        renderProducts();
+    </script>
 </body>
 </html>
